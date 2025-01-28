@@ -6,6 +6,8 @@
 #include <vector>
 #include <queue>
 #include <stack>
+#include <unordered_set>
+#include <utility>
 
 
 class Astar_HR {
@@ -16,8 +18,15 @@ private:
         }
     };
 
+    struct MakePair {
+        std::size_t operator()(const std::pair<int, int>& p) const {
+            return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
+        }
+    };
+
     std::stack<Node*> path;
     std::priority_queue<Node, std::vector<Node>, CompareCost> pq;
+    std::unordered_set<std::pair<int, int>, MakePair> visited;
     int xs, ys, xg, yg, yMax, xMax, lenPath, lenObs, nodeQty;
     int* obstacles;
     int* xPoints;
