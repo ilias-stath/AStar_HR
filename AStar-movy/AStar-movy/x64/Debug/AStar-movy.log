@@ -1,0 +1,6 @@
+﻿  Astar_HR.cpp
+C:\Users\Ilias Stathakos\source\repos\AStar-movy\AStar-movy\Astar_HR.cpp(49,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Ilias Stathakos\source\repos\AStar-movy\AStar-movy\Astar_HR.cpp(53,33): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Ilias Stathakos\source\repos\AStar-movy\AStar-movy\Astar_HR.cpp(118,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Ilias Stathakos\source\repos\AStar-movy\AStar-movy\Astar_HR.cpp(119,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  AStar-movy.vcxproj -> C:\Users\Ilias Stathakos\source\repos\AStar-movy\x64\Debug\AStar-movy.exe
