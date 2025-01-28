@@ -21,12 +21,14 @@ Astar_HR::Astar_HR(int xs, int ys, int xg, int yg, int xMax, int yMax, int* ob, 
 
     for (int i = 0; i < this->lenObs; i++) {
         if (i % 2 == 0) {
-            cout << endl;
+            //cout << endl;
         }
         cout << this->obstacles[i] << ",";
     }
 
     cout << endl << endl;
+
+
 }
 
 double Astar_HR::heuristic(int xn, int yn, int xg, int yg) {
@@ -63,19 +65,19 @@ void Astar_HR::expandNode(Node* dad) {
                         }
                         if (!obFlag) {
                             nodeQty++;
-                            // To set the diagonals as other cost(not good, do not use)
-                            //if (abs(i) == 1 && abs(j) == 1) {
-                            //    //cout << "i=" << i << " ,  j=" << j << endl;
-                            //    son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
-                            //}
-                            //else {
-                            //    son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
-                            //}
-                            son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
+                             //To set the diagonals as other cost(not good, do not use)
+                            if (abs(i) == 1 && abs(j) == 1) {
+                                //cout << "i=" << i << " ,  j=" << j << endl;
+                                son.setParameters(x, y, dad->getMoveCost() + 0.9, heuristic(x, y, this->xg, this->yg), dad);
+                            }
+                            else {
+                                son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
+                            }
+                            //son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
+                            pq.push(son);
                             //cout << "Node " << nodeQty << "  -> ";
                             //son.printNode();
                             //cout << "Memory of Node -> " << sizeof(son) << endl;
-                            pq.push(son);
                         }
                         else {
                             obFlag = false;
@@ -134,22 +136,30 @@ int Astar_HR::pathGeneration() {
     //cout << "Nodes = " << nodeQty << endl;
     while (true) {
 
-        //cout << "----------" << endl;
-        //cout << "Selected = ";
-        //n->printNode();
-        //cout << "----------" << endl;
+        /*cout << "----------" << endl;
+        cout << "Selected-> ";
+        n->printNode();
+        cout << "Node->" << n << endl;
+        cout << "----------" << endl;*/
 
         if (n->getX() == xg && n->getY() == yg) {
             break;
         }
 
         //cout << "--------------------------Nodes----------------" << endl;
-        expandNode(n);
+        if (!(visited.find({n->getX(), n->getY()}) != visited.end())) {
+            visited.insert({n->getX(), n->getY() });
+            expandNode(n);
+            
+        }
+        else {
+            //cout << "FOUND (" << n->getX() << " , " << n->getY() << ")!!" << endl;
+        }
         //cout << "--------------------------Nodes----------------" << endl;
 
         n = new Node(pq.top());
-        n->printNode();
-        cout << "Node->" << n << endl;
+        //n->printNode();
+        //cout << "Node->" << n << endl;
         pq.pop();
 
     }
