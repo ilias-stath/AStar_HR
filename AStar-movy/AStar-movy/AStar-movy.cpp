@@ -9,7 +9,7 @@ int main()
     int* xPoints = nullptr;
     int* yPoints = nullptr;
     int len = 0;
-    int lenObstaclePoints = 1;
+    int lenObstaclePoints = 51;
     int lenObs = 2*lenObstaclePoints;
     int xMax = 300, yMax = 200;
     //bool grid[150][100];
@@ -26,13 +26,13 @@ int main()
         }
     }*/
 
-    obstacles = (int*)malloc(sizeof(int) * lenObs);
-    /*for (int i = 0; i < 50; i+=2) {
+    obstacles = (int*)malloc(sizeof(int) * lenObs); 
+    for (int i = 0; i <= 100; i+=2) {
         obstacles[i] = 150;
-        obstacles[i+1] = 75 + i;
-    }*/
-    obstacles[0] = 3;
-    obstacles[1] = 10;
+        obstacles[i+1] = 75 + i/2;
+    }
+    /*obstacles[0] = 3;
+    obstacles[1] = 10;*/
 
     /*obstacles[2] = 150;
     obstacles[3] = 101;
@@ -70,7 +70,7 @@ int main()
 
     cout << "Starting" << endl;
 
-    Astar_HR shit(0, 10, 10, 10, xMax, yMax, obstacles, lenObs);
+    Astar_HR shit(100, 100, 200, 100, xMax, yMax, obstacles, lenObs);
     len = shit.pathGeneration();
     
     xPoints = (int*)malloc(sizeof(int) * len);
