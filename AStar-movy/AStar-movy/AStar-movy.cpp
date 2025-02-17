@@ -195,7 +195,7 @@ int main()
     cout << "Starting" << endl;
 
     
-    Astar_HR shit(122, 22, 240, 140, xMax, yMax, TotObs, TotLenObs);
+    Astar_HR shit(122, 22, 150, 115, xMax, yMax, TotObs, TotLenObs);
     len = shit.pathGeneration();
 
     xPoints = (int*)malloc(sizeof(int) * len);
@@ -205,10 +205,25 @@ int main()
 
     shit.getPath(xPoints, yPoints);
 
-    //cout << len << endl;
+    cout << len << endl;
+
     for (int i = 0; i < len; i++) {
         //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
         cout << xPoints[i] << ", " << yPoints[i] << ", ";
+    }
+
+    cout << endl;
+
+    for (int i = 0; i < len; i++) {
+        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
+        cout << xPoints[i] << 0.0 << ", ";
+    }
+
+    cout << endl;
+
+    for (int i = 0; i < len; i++) {
+        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
+        cout << yPoints[i]<< 0.0 << ", ";
     }
     
 }
