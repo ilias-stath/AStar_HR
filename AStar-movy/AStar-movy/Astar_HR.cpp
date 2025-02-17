@@ -14,10 +14,10 @@ Astar_HR::Astar_HR(int xs, int ys, int xg, int yg, int xMax, int yMax, int* ob, 
     this->xPoints = nullptr;
     this->yPoints = nullptr;
     this->lenObs = lenObs;
-    this->obstacles = (int*)malloc(sizeof(int)*this->lenObs);
+    this->obstacles = (int*)malloc(sizeof(int) * this->lenObs);
     this->nodeQty = 0;
 
-    memcpy(obstacles,ob,this->lenObs*sizeof(int));
+    memcpy(obstacles, ob, this->lenObs * sizeof(int));
 
     for (int i = 0; i < this->lenObs; i++) {
         if (i % 2 == 0) {
@@ -59,13 +59,13 @@ void Astar_HR::expandNode(Node* dad) {
                         //cout << "----IN----" << endl;
                         //cout << "IN for-> " << "X=" << x << "Y=" << y << endl;
                         for (int k = 0; k < this->lenObs; k += 2) {
-                            if (this->obstacles[k] == x && this->obstacles[k+1] == y) {
+                            if (this->obstacles[k] == x && this->obstacles[k + 1] == y) {
                                 obFlag = true;
                             }
                         }
                         if (!obFlag) {
                             nodeQty++;
-                             //To set the diagonals as other cost(not good, do not use)
+                            //To set the diagonals as other cost(not good, do not use)
                             if (abs(i) == 1 && abs(j) == 1) {
                                 //cout << "i=" << i << " ,  j=" << j << endl;
                                 son.setParameters(x, y, dad->getMoveCost() + 0.9, heuristic(x, y, this->xg, this->yg), dad);
@@ -102,9 +102,9 @@ void Astar_HR::setPath(Node* n) {
     } while (n->getParent() != nullptr);
 
     // Allocate new memory for x and y
-    xPoints = (int*) malloc(sizeof(int) * lenPath);
+    xPoints = (int*)malloc(sizeof(int) * lenPath);
     //xPoints = new int(lenPath);
-    yPoints = (int*) malloc(sizeof(int) * lenPath);
+    yPoints = (int*)malloc(sizeof(int) * lenPath);
     //yPoints = new int(lenPath);
 
     if (xPoints == nullptr || yPoints == nullptr) {
@@ -126,8 +126,8 @@ void Astar_HR::setPath(Node* n) {
 }
 
 void Astar_HR::getPath(int* x, int* y) {
-    memcpy(x, xPoints, lenPath*sizeof(int));
-    memcpy(y, yPoints, lenPath*sizeof(int));
+    memcpy(x, xPoints, lenPath * sizeof(int));
+    memcpy(y, yPoints, lenPath * sizeof(int));
 }
 
 int Astar_HR::pathGeneration() {
@@ -147,10 +147,10 @@ int Astar_HR::pathGeneration() {
         }
 
         //cout << "--------------------------Nodes----------------" << endl;
-        if (!(visited.find({n->getX(), n->getY()}) != visited.end())) {
-            visited.insert({n->getX(), n->getY() });
+        if (!(visited.find({ n->getX(), n->getY() }) != visited.end())) {
+            visited.insert({ n->getX(), n->getY() });
             expandNode(n);
-            
+
         }
         else {
             //cout << "FOUND (" << n->getX() << " , " << n->getY() << ")!!" << endl;
