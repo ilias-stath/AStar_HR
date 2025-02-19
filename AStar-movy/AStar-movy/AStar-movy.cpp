@@ -1,12 +1,14 @@
 
 #include <iostream>
 #include "AStar_HR.h"
+#include <set>
 
 using namespace std;
 
 int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizontal); // True horizontal, false vertical
 int stageOb(int** obstacles, bool team); // True blue, false yellow
 int enemyOb(int** obstacles, int x, int y);
+void removeDuplicates(int*& x, int*& y, int& size);
 
 int main()
 {
@@ -195,7 +197,7 @@ int main()
     cout << "Starting" << endl;
 
     
-    Astar_HR shit(122, 22, 150, 115, xMax, yMax, TotObs, TotLenObs);
+    Astar_HR shit(123, 23, 150, 115, xMax, yMax, TotObs, TotLenObs);
     len = shit.pathGeneration();
 
     xPoints = (int*)malloc(sizeof(int) * len);
@@ -207,27 +209,86 @@ int main()
 
     cout << len << endl;
 
+    cout << "---Before /10---" << endl;
     for (int i = 0; i < len; i++) {
         //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
         cout << xPoints[i] << ", " << yPoints[i] << ", ";
     }
 
-    cout << endl;
-
     for (int i = 0; i < len; i++) {
-        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
-        cout << xPoints[i] << 0.0 << ", ";
+        xPoints[i] = xPoints[i] / 10;
+        yPoints[i] = yPoints[i] / 10;
     }
 
-    cout << endl;
+    removeDuplicates(xPoints, yPoints, len);
+
+    cout << endl << "---Modfication---" << endl;
 
     for (int i = 0; i < len; i++) {
         //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
-        cout << yPoints[i]<< 0.0 << ", ";
+        cout << xPoints[i] << ", " << yPoints[i] << ", ";
+    }
+
+    cout << endl << "---X---" << endl;
+
+    for (int i = 0; i < len; i++) {
+        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
+        cout << xPoints[i]*100.0  << ", ";
+    }
+
+    cout << endl << "---Y---" << endl;
+
+    for (int i = 0; i < len; i++) {
+        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
+        cout << yPoints[i]*100.0 << ", ";
+    }
+
+    cout << endl << endl;
+
+    for (int i = 0; i < len; i++) {
+        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
+        cout << xPoints[i]*10 << ", " << yPoints[i]*10 << ", ";
     }
     
 }
 
+
+void removeDuplicates(int*& x, int*& y, int& size) {
+    if (size <= 0) return;
+
+    std::set<std::pair<int, int>> seen;
+    int* new_x = new int[size]; // Temporary arrays for filtered results
+    int* new_y = new int[size];
+
+    int new_size = 0;
+    for (int i = 0; i < size; ++i) {
+        std::pair<int, int> point = { x[i], y[i] };
+        if (seen.find(point) == seen.end()) {  // If not seen before
+            seen.insert(point);
+            new_x[new_size] = x[i];
+            new_y[new_size] = y[i];
+            new_size++;
+        }
+    }
+
+    // Delete old arrays and update pointers
+    delete[] x;
+    delete[] y;
+    x = new int[new_size];
+    y = new int[new_size];
+
+    // Copy filtered results
+    for (int i = 0; i < new_size; ++i) {
+        x[i] = new_x[i];
+        y[i] = new_y[i];
+    }
+
+    // Clean up temporary arrays
+    delete[] new_x;
+    delete[] new_y;
+
+    size = new_size;  // Update size
+}
 
 int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizontal) {
     int obLen = 0, minusLen = 0;
