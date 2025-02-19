@@ -68,7 +68,7 @@ void Astar_HR::expandNode(Node* dad) {
                             //To set the diagonals as other cost(not good, do not use)
                             if (abs(i) == 1 && abs(j) == 1) {
                                 //cout << "i=" << i << " ,  j=" << j << endl;
-                                son.setParameters(x, y, dad->getMoveCost() + 0.9, heuristic(x, y, this->xg, this->yg), dad);
+                                son.setParameters(x, y, dad->getMoveCost() + sqrt(2), heuristic(x, y, this->xg, this->yg), dad);
                             }
                             else {
                                 son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
