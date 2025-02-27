@@ -2,32 +2,39 @@
 #include <iostream>
 #include "AStar_HR.h"
 #include <set>
+#include <vector>
+#include <cmath>
+#include <windows.h>
 
 using namespace std;
 
-int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizontal); // True horizontal, false vertical
-int stageOb(int** obstacles, bool team); // True blue, false yellow
-int enemyOb(int** obstacles, int x, int y);
-void removeDuplicates(int*& x, int*& y, int& size);
+unsigned short tribObstacles(unsigned short** obstacles, short x,  short y, unsigned short xMax, unsigned short yMax, bool horizontal); // True horizontal, false vertical
+unsigned short stageOb(unsigned short** obstacles, bool team); // True blue, false yellow
+unsigned short enemyOb(unsigned short** obstacles, short x, short y);
+//void removeDuplicates(int*& x, int*& y, int& size);
+
+
 
 int main()
 {
-    int* xPoints = nullptr;
-    int* yPoints = nullptr;
-    int len = 0;
+    float* xPoints = nullptr;
+    float* yPoints = nullptr;
+    unsigned short len = 0;
     /*int lenObstaclePoints = 51;
     int lenObs = 2 * lenObstaclePoints;*/
-	int lenObs = 0;
-    int TotLenObs = 0;
-    int xMax = 300, yMax = 200;
+    unsigned short lenObs = 0;
+    unsigned short TotLenObs = 0;
+    unsigned short xMax = 300, yMax = 200;
     //bool grid[150][100];
-    int* obstacles = nullptr;
-    int* TotObs = nullptr;
-    int* tempObs = nullptr;
+    unsigned short* obstacles = nullptr;
+    unsigned short* TotObs = nullptr;
+    unsigned short* tempObs = nullptr;
 
     bool a[10], b[10];
 
+
     cout << "Memory of int len -> " << sizeof(len) << endl;
+    cout << "Memory of size_t -> " << sizeof(size_t) << endl;
     //cout << "Memory of int -> " << sizeof(xPoints) << endl;
 
     /*for (int x = 0; x < xMax; x++) {
@@ -56,10 +63,10 @@ int main()
     obstacles[8] = 2;
     obstacles[9] = 3;*/
 
-    int obsStart[20] = {7, 40, 77, 25, 223, 25, 293, 40, 7, 133, 110, 95, 190, 95, 293, 133, 81, 173, 219, 173};
-    int k = 0;
+    short obsStart[20] = {7, 40, 77, 25, 223, 25, 293, 40, 7, 133, 110, 95, 190, 95, 293, 133, 81, 173, 219, 173};
+    unsigned short k = 0;
 
-    for (int i = 0; i < 20; i += 2) {
+    for (unsigned short i = 0; i < 20; i += 2) {
         if (k == 0 || k == 3 || k == 4 || k == 7) {
             lenObs = tribObstacles(&obstacles, obsStart[i], obsStart[i + 1], xMax, yMax, false);
         }
@@ -69,30 +76,30 @@ int main()
         k++;
         
 
-        tempObs = (int*)malloc(TotLenObs * sizeof(int));
+        tempObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
         if (tempObs == nullptr) {
             cout << "Memory allocation failed!" << endl;
             exit(1);
         }
 
         if (TotLenObs > 0) {
-            memcpy(tempObs, TotObs, TotLenObs * sizeof(int));
+            memcpy(tempObs, TotObs, TotLenObs * sizeof(unsigned short));
             free(TotObs);
         }
 
 		TotLenObs += lenObs;
 
-        TotObs = (int*)malloc(TotLenObs * sizeof(int));
+        TotObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
         if (TotObs == nullptr) {
             cout << "Memory allocation failed!" << endl;
             exit(1);
         }
 
         if (TotLenObs - lenObs > 0) {
-            memcpy(TotObs, tempObs, (TotLenObs - lenObs) * sizeof(int));
+            memcpy(TotObs, tempObs, (TotLenObs - lenObs) * sizeof(unsigned short));
         }
 
-        memcpy(TotObs + (TotLenObs - lenObs), obstacles, lenObs * sizeof(int));
+        memcpy(TotObs + (TotLenObs - lenObs), obstacles, lenObs * sizeof(unsigned short));
 
         free(tempObs);
 
@@ -104,30 +111,30 @@ int main()
     lenObs = stageOb(&obstacles, true);
 
 
-    tempObs = (int*)malloc(TotLenObs * sizeof(int));
+    tempObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
     if (tempObs == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
     if (TotLenObs > 0) {
-        memcpy(tempObs, TotObs, TotLenObs * sizeof(int));
+        memcpy(tempObs, TotObs, TotLenObs * sizeof(unsigned short));
         free(TotObs);
     }
 
     TotLenObs += lenObs;
 
-    TotObs = (int*)malloc(TotLenObs * sizeof(int));
+    TotObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
     if (TotObs == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
     if (TotLenObs - lenObs > 0) {
-        memcpy(TotObs, tempObs, (TotLenObs - lenObs) * sizeof(int));
+        memcpy(TotObs, tempObs, (TotLenObs - lenObs) * sizeof(unsigned short));
     }
 
-    memcpy(TotObs + (TotLenObs - lenObs), obstacles, lenObs * sizeof(int));
+    memcpy(TotObs + (TotLenObs - lenObs), obstacles, lenObs * sizeof(unsigned short));
 
     free(tempObs);
 
@@ -137,30 +144,30 @@ int main()
     lenObs = enemyOb(&obstacles, 240, 60);
 
 
-    tempObs = (int*)malloc(TotLenObs * sizeof(int));
+    tempObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
     if (tempObs == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
     if (TotLenObs > 0) {
-        memcpy(tempObs, TotObs, TotLenObs * sizeof(int));
+        memcpy(tempObs, TotObs, TotLenObs * sizeof(unsigned short));
         free(TotObs);
     }
 
     TotLenObs += lenObs;
 
-    TotObs = (int*)malloc(TotLenObs * sizeof(int));
+    TotObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
     if (TotObs == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
     if (TotLenObs - lenObs > 0) {
-        memcpy(TotObs, tempObs, (TotLenObs - lenObs) * sizeof(int));
+        memcpy(TotObs, tempObs, (TotLenObs - lenObs) * sizeof(unsigned short));
     }
 
-    memcpy(TotObs + (TotLenObs - lenObs), obstacles, lenObs * sizeof(int));
+    memcpy(TotObs + (TotLenObs - lenObs), obstacles, lenObs * sizeof(unsigned short));
 
     free(tempObs);
 
@@ -169,9 +176,9 @@ int main()
     cout << endl << endl << "END OBSTACLES CREATION" << endl << endl;
 
 
-    /*for (int i = 0; i < TotLenObs; i += 2) {
+    for (int i = 0; i < TotLenObs; i += 2) {
         cout << TotObs[i] << ", " << TotObs[i + 1] << ", ";
-    }*/
+    }
 
     cout << endl;
 
@@ -196,103 +203,172 @@ int main()
 
     cout << "Starting" << endl;
 
-    
-    Astar_HR shit(123, 23, 150, 115, xMax, yMax, TotObs, TotLenObs);
+    /*TotObs = (int*)malloc(sizeof(double) * 2);
+    TotLenObs = 2;
+    TotObs[0] = 1;
+    TotObs[1] = 1;  */       
+
+    cout << "Number of Obstacles -> " << TotLenObs << endl;
+    cout << "Memory of Obstacles with int -> " << TotLenObs * sizeof(int) << endl;
+    cout << "Memory of Obstacles witn short -> " << TotLenObs * sizeof(unsigned short) << endl;
+
+    Astar_HR shit(0, 0, 300, 200, xMax, yMax, TotObs, TotLenObs, false);
+    cout << "Memory of shit ->" << sizeof(shit) << endl;
+
     len = shit.pathGeneration();
 
-    xPoints = (int*)malloc(sizeof(int) * len);
+    cout << "Memory of shit ->" << sizeof(shit) << endl;
+
+    xPoints = (float*)malloc(sizeof(float) * len);
     //xPoints = new int(len);
-    yPoints = (int*)malloc(sizeof(int) * len);
+    yPoints = (float*)malloc(sizeof(float) * len);
     //yPoints = new int(len);
 
     shit.getPath(xPoints, yPoints);
 
-    cout << len << endl;
+    cout << "Memory of shit ->" << sizeof(shit) << endl;
 
-    cout << "---Before /10---" << endl;
-    for (int i = 0; i < len; i++) {
+    //cout << len << endl;
+
+    cout << "---Astar points---" << endl;
+    for (unsigned short i = 0; i < len; i++) {
         //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
         cout << xPoints[i] << ", " << yPoints[i] << ", ";
     }
 
-    for (int i = 0; i < len; i++) {
+    /*for (int i = 0; i < len; i++) {
         xPoints[i] = xPoints[i] / 10;
         yPoints[i] = yPoints[i] / 10;
     }
 
-    removeDuplicates(xPoints, yPoints, len);
+    removeDuplicates(xPoints, yPoints, len);*/
 
-    cout << endl << "---Modfication---" << endl;
+    //cout << endl << "---Modfication---" << endl;
 
-    for (int i = 0; i < len; i++) {
-        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
-        cout << xPoints[i] << ", " << yPoints[i] << ", ";
-    }
+    //for (int i = 0; i < len; i++) {
+    //    //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
+    //    cout << xPoints[i]*10 << ", " << yPoints[i]*10 << ", ";
+    //}
 
     cout << endl << "---X---" << endl;
 
-    for (int i = 0; i < len; i++) {
-        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
-        cout << xPoints[i]*100.0  << ", ";
+    for (unsigned short i = 0; i < len; i++) {
+        cout << xPoints[i]*10  << ", ";
     }
 
     cout << endl << "---Y---" << endl;
 
-    for (int i = 0; i < len; i++) {
-        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
-        cout << yPoints[i]*100.0 << ", ";
+    for (unsigned short i = 0; i < len; i++) {
+        cout << yPoints[i]*10 << ", ";
     }
 
     cout << endl << endl;
 
-    for (int i = 0; i < len; i++) {
-        //cout << "x=" << xPoints[i] << " ,  y=" << yPoints[i] << endl;
-        cout << xPoints[i]*10 << ", " << yPoints[i]*10 << ", ";
-    }
+
+    //vector<Vec2> controlPoints;
+    //for (int i = 0; i < len; i++) {
+    //    controlPoints.push_back(Vec2(xPoints[i], yPoints[i]));
+    //}
+
+    //cout << endl << "----Control points----" << endl;
+
+    //for (const auto& point : controlPoints) {
+    //    cout << point.x << ", " << point.y << ", ";
+    //}
+
+    //cout << endl << endl;
+
+    //int subdivisions = len; // It gives a good number of points that do not alter the trajectory
+    //                          // You can use =len/2, or len*2, but the second is overkill (The higher the subdivisions numbers the more precise)
+    //
+    //vector<Vec2> bezierCurve = bezierPath(controlPoints, subdivisions);
+
+    //cout << endl << "----Bezier curve points----" << endl;
+
+    //
+
+    //for (const auto& point : bezierCurve) {
+    //    cout << point.x*1 << ", " << point.y*1 << ", ";
+    //}
+
+    //cout << endl << endl;
+
+    //for (const auto& point : bezierCurve) {
+    //    cout << point.x * 1 << ", ";
+    //}
+
+    //cout << endl << endl;
+
+    //for (const auto& point : bezierCurve) {
+    //    cout << point.y * 1 << ", ";
+    //}
+
+    //cout << endl << "len = " << subdivisions + 1 << " (subdivisions + 1)" << endl;
+
+    //cout << endl << endl;
+
     
+    //----To test the coputation time of the 2 binomial function ( It was shown that the chat's was better with some improvements----/
+   
+    /*unsigned long long millisStart, fmMillisStop, fcMillisStop;
+    double f_m=0, f_c=0;
+    int n = 100;
+    cout << "tgamma(n) -> " << tgamma(n+1) << endl;
+    for (int i = 0; i < n; i++) {
+        millisStart = GetTickCount64();
+        f_c = binomial(n, i);
+        fmMillisStop = GetTickCount64();
+        f_m = bin(n, i);
+        fcMillisStop = GetTickCount64();
+        cout << "i -> " << i << " , Binomial -> " << f_c << " , Bin -> " << f_m << endl;
+        cout << "           |-> " << fmMillisStop - millisStart << "    |-> " << fcMillisStop - fmMillisStop << endl;
+        cout << "start -> " << millisStart << " , fm -> " << fmMillisStop << " , fc -> " << fcMillisStop << endl;
+    }*/
 }
 
 
-void removeDuplicates(int*& x, int*& y, int& size) {
-    if (size <= 0) return;
+//void removeDuplicates(int*& x, int*& y, int& size) {
+//    if (size <= 0) return;
+//
+//    std::set<std::pair<int, int>> seen;
+//    int* new_x = new int[size]; // Temporary arrays for filtered results
+//    int* new_y = new int[size];
+//
+//    int new_size = 0;
+//    for (int i = 0; i < size; ++i) {
+//        std::pair<int, int> point = { x[i], y[i] };
+//        if (seen.find(point) == seen.end()) {  // If not seen before
+//            seen.insert(point);
+//            new_x[new_size] = x[i];
+//            new_y[new_size] = y[i];
+//            new_size++;
+//        }
+//    }
+//
+//    // Delete old arrays and update pointers
+//    delete[] x;
+//    delete[] y;
+//    x = new int[new_size];
+//    y = new int[new_size];
+//
+//    // Copy filtered results
+//    for (int i = 0; i < new_size; ++i) {
+//        x[i] = new_x[i];
+//        y[i] = new_y[i];
+//    }
+//
+//    // Clean up temporary arrays
+//    delete[] new_x;
+//    delete[] new_y;
+//
+//    size = new_size;  // Update size
+//
+//
+//}
 
-    std::set<std::pair<int, int>> seen;
-    int* new_x = new int[size]; // Temporary arrays for filtered results
-    int* new_y = new int[size];
-
-    int new_size = 0;
-    for (int i = 0; i < size; ++i) {
-        std::pair<int, int> point = { x[i], y[i] };
-        if (seen.find(point) == seen.end()) {  // If not seen before
-            seen.insert(point);
-            new_x[new_size] = x[i];
-            new_y[new_size] = y[i];
-            new_size++;
-        }
-    }
-
-    // Delete old arrays and update pointers
-    delete[] x;
-    delete[] y;
-    x = new int[new_size];
-    y = new int[new_size];
-
-    // Copy filtered results
-    for (int i = 0; i < new_size; ++i) {
-        x[i] = new_x[i];
-        y[i] = new_y[i];
-    }
-
-    // Clean up temporary arrays
-    delete[] new_x;
-    delete[] new_y;
-
-    size = new_size;  // Update size
-}
-
-int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizontal) {
-    int obLen = 0, minusLen = 0;
-    int obs[1008];
+unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsigned short xMax, unsigned short yMax, bool horizontal) {
+    unsigned short obLen = 0, minusLen = 0;
+    unsigned short obs[1008];
 
 
     if (horizontal) {
@@ -304,7 +380,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         // Left-to-right
 
         // First left vertical
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x < 0 || y + i/2 < 0) || (x > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -317,7 +393,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // Second left vertical
         x = x + 1;
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x < 0 || y + i/2 < 0) || (x > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -330,7 +406,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // First down horizontal
         x = x + 1;
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + i/2 < 0 || y < 0) || (x + i/2 > xMax || y > yMax)) {
                 minusLen += 2;
             }
@@ -342,7 +418,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         obLen += 120;
 
         // Second down horizontal
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + i/2 < 0 || y + 1 < 0) || (x + i/2 > xMax || y + 1 > yMax)) {
                 minusLen += 2;
             }
@@ -354,7 +430,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         obLen += 120;
 
         // First up horizontal
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + i/2 < 0 || y + 31 < 0) || (x + i/2 > xMax || y + 31 > yMax)) {
                 minusLen += 2;
             }
@@ -366,7 +442,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         obLen += 120;
 
         // Second up horizontal
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + i/2 < 0 || y + 30 < 0) || (x + i/2 > xMax || y + 30 > yMax)) {
                 minusLen += 2;
             }
@@ -379,7 +455,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // Third vertical
         x = x + 58;
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x < 0 || y + i/2 < 0) || (x > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -392,7 +468,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // Fourth vertical
         x = x + 1;
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x < 0 || y + i/2 < 0) || (x > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -412,7 +488,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         // Left-to-right
 
         // First left vertical
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x + i/2 < 0 || y < 0) || (x + i/2 > xMax || y > yMax)) {
                 minusLen += 2;
             }
@@ -426,7 +502,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // Second left vertical
         y = y + 1;
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x + i/2 < 0 || y < 0) || (x + i/2 > xMax || y > yMax)) {
                 minusLen += 2;
             }
@@ -440,7 +516,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // First down horizontal
         y = y + 1;
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x < 0 || y + i/2 < 0) || (x > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -453,7 +529,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         //cout << minusLen << endl;
 
         // Second down horizontal
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + 1 < 0 || y + i/2 < 0) || (x + 1 > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -466,7 +542,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         //cout << minusLen << endl;
 
         // First up horizontal
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + 31 < 0 || y + i/2 < 0) || (x + 31 > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -479,7 +555,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
         //cout << minusLen << endl;
 
         // Second up horizontal
-        for (int i = 0; i < 120; i += 2) {
+        for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + 30 < 0 || y + i/2 < 0) || (x + 30 > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
             }
@@ -493,7 +569,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // Third vertical
         y = y + 58;
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x + i/2 < 0 || y < 0) || (x + i/2 > xMax || y > yMax)) {
                 minusLen += 2;
             }
@@ -507,7 +583,7 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
 
         // Fourth vertical
         y = y + 1;
-        for (int i = 0; i < 64; i += 2) {
+        for (unsigned short i = 0; i < 64; i += 2) {
             if ((x + i/2 < 0 || y < 0) || (x + i/2 > xMax || y > yMax)) {
                 minusLen += 2;
             }
@@ -529,27 +605,27 @@ int tribObstacles(int** obstacles, int x, int y, int xMax, int yMax, bool horizo
     }
     cout << endl;*/
 
-    *obstacles = (int*)malloc((obLen - minusLen) * sizeof(int));
+    *obstacles = (unsigned short*)malloc((obLen - minusLen) * sizeof(unsigned short));
     if (*obstacles == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
-    memcpy(*obstacles, obs, (obLen - minusLen) * sizeof(int));
+    memcpy(*obstacles, obs, (obLen - minusLen) * sizeof(unsigned short));
     return (obLen - minusLen);
 }
 
 
-int stageOb(int** obstacles, bool team) {
-    int obLen = 0, x = 0, y = 0;
-    int obs[1296];
+unsigned short stageOb(unsigned short** obstacles, bool team) {
+    unsigned short obLen = 0, x = 0, y = 0;
+    unsigned short obs[1296];
 
     if (team) {
         x = 0;
         y = 155 - 22;
 
         // First horizontal
-        for (int i = 0; i < 434; i+=2) {
+        for (unsigned short i = 0; i < 434; i+=2) {
             obs[i + obLen] = x + i/2;
             obs[i + obLen + 1] = y;
         }
@@ -557,7 +633,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second horizontal
         y += 1;
-        for (int i = 0; i < 434; i += 2) {
+        for (unsigned short i = 0; i < 434; i += 2) {
             obs[i + obLen] = x + i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -566,7 +642,7 @@ int stageOb(int** obstacles, bool team) {
         // First vertical
         x = 195 + 22;
         y = 155 - 22;
-        for (int i = 0; i < 50; i += 2) {
+        for (unsigned short i = 0; i < 50; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -574,7 +650,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second vertical
         x -= 1;
-        for (int i = 0; i < 50; i += 2) {
+        for (unsigned short i = 0; i < 50; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -583,7 +659,7 @@ int stageOb(int** obstacles, bool team) {
         // First small horizontal
         x = 195 + 22;
         y = 180 - 22;
-        for (int i = 0; i < 80; i += 2) {
+        for (unsigned short i = 0; i < 80; i += 2) {
             obs[i + obLen] = x + i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -591,7 +667,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second small horizontal
         y += 1;
-        for (int i = 0; i < 80; i += 2) {
+        for (unsigned short i = 0; i < 80; i += 2) {
             obs[i + obLen] = x + i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -600,7 +676,7 @@ int stageOb(int** obstacles, bool team) {
         // First small vertical
         x = 235 + 22;
         y = 180 - 22;
-        for (int i = 0; i < 84; i += 2) {
+        for (unsigned short i = 0; i < 84; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -608,7 +684,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second small vertical
         x -= 1;
-        for (int i = 0; i < 84; i += 2) {
+        for (unsigned short i = 0; i < 84; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -619,7 +695,7 @@ int stageOb(int** obstacles, bool team) {
         y = 155 - 22;
 
         // First horizontal
-        for (int i = 0; i < 434; i += 2) {
+        for (unsigned short i = 0; i < 434; i += 2) {
             obs[i + obLen] = x - i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -627,7 +703,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second horizontal
         y += 1;
-        for (int i = 0; i < 434; i += 2) {
+        for (unsigned short i = 0; i < 434; i += 2) {
             obs[i + obLen] = x - i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -636,7 +712,7 @@ int stageOb(int** obstacles, bool team) {
         // First vertical
         x = 300-195 - 22;
         y = 155 - 22;
-        for (int i = 0; i < 50; i += 2) {
+        for (unsigned short i = 0; i < 50; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -644,7 +720,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second vertical
         x -= 1;
-        for (int i = 0; i < 50; i += 2) {
+        for (unsigned short i = 0; i < 50; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -653,7 +729,7 @@ int stageOb(int** obstacles, bool team) {
         // First small horizontal
         x = 300-195 - 22;
         y = 180 - 22;
-        for (int i = 0; i < 80; i += 2) {
+        for (unsigned short i = 0; i < 80; i += 2) {
             obs[i + obLen] = x - i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -661,7 +737,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second small horizontal
         y += 1;
-        for (int i = 0; i < 80; i += 2) {
+        for (unsigned short i = 0; i < 80; i += 2) {
             obs[i + obLen] = x - i / 2;
             obs[i + obLen + 1] = y;
         }
@@ -670,7 +746,7 @@ int stageOb(int** obstacles, bool team) {
         // First small vertical
         x = 300-235 - 22;
         y = 180 - 22;
-        for (int i = 0; i < 84; i += 2) {
+        for (unsigned short i = 0; i < 84; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -678,7 +754,7 @@ int stageOb(int** obstacles, bool team) {
 
         // Second small vertical
         x -= 1;
-        for (int i = 0; i < 84; i += 2) {
+        for (unsigned short i = 0; i < 84; i += 2) {
             obs[i + obLen] = x;
             obs[i + obLen + 1] = y + i / 2;
         }
@@ -691,29 +767,29 @@ int stageOb(int** obstacles, bool team) {
     cout << endl;*/
 
 
-    *obstacles = (int*)malloc(obLen * sizeof(int));
+    *obstacles = (unsigned short*)malloc(obLen * sizeof(unsigned short));
     if (*obstacles == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
-    memcpy(*obstacles, obs, obLen * sizeof(int));
+    memcpy(*obstacles, obs, obLen * sizeof(unsigned short));
 
     return obLen;
 }
 
 
 
-int enemyOb(int** obstacles, int x, int y) {
-    int obLen = 0;
-    int obs[1328];
+unsigned short enemyOb(unsigned short** obstacles, short x, short y) {
+    unsigned short obLen = 0;
+    unsigned short obs[1328];
 
     // 21 + 21
     x = x - 42;
     y = y - 42; 
 
     // First left vertical
-    for (int i = 0; i < 168; i += 2) {
+    for (unsigned short i = 0; i < 168; i += 2) {
         obs[i + obLen] = x;
         obs[i + obLen + 1] = y + i/2;
     }
@@ -721,7 +797,7 @@ int enemyOb(int** obstacles, int x, int y) {
 
     // Second left Vertical
     x = x + 1;
-    for (int i = 0; i < 168; i += 2) {
+    for (unsigned short i = 0; i < 168; i += 2) {
         obs[i + obLen] = x;
         obs[i + obLen + 1] = y + i/2;
     }
@@ -729,28 +805,28 @@ int enemyOb(int** obstacles, int x, int y) {
 
     // First down horizontal
     x = x + 1;
-    for (int i = 0; i < 164; i += 2) {
+    for (unsigned short i = 0; i < 164; i += 2) {
         obs[i + obLen] = x + i/2;
         obs[i + obLen + 1] = y;
     }
     obLen += 164;
 
     // Second down horizontal
-    for (int i = 0; i < 164; i += 2) {
+    for (unsigned short i = 0; i < 164; i += 2) {
         obs[i + obLen] = x + i/2;
         obs[i + obLen + 1] = y + 1;
     }
     obLen += 164;
 
     // First up horizontal
-    for (int i = 0; i < 164; i += 2) {
+    for (unsigned short i = 0; i < 164; i += 2) {
         obs[i + obLen] = x + i/2;
         obs[i + obLen + 1] = y + 83;
     }
     obLen += 164;
 
     // Second up horizontal
-    for (int i = 0; i < 164; i += 2) {
+    for (unsigned short i = 0; i < 164; i += 2) {
         obs[i + obLen] = x + i/2;
         obs[i + obLen + 1] = y + 82;
     }
@@ -758,7 +834,7 @@ int enemyOb(int** obstacles, int x, int y) {
 
     // First right vertical
     x = x + 82;
-    for (int i = 0; i < 168; i += 2) {
+    for (unsigned short i = 0; i < 168; i += 2) {
         obs[i + obLen] = x;
         obs[i + obLen + 1] = y + i / 2;
     }
@@ -766,20 +842,20 @@ int enemyOb(int** obstacles, int x, int y) {
 
     // Second right Vertical
     x = x + 1;
-    for (int i = 0; i < 168; i += 2) {
+    for (unsigned short i = 0; i < 168; i += 2) {
         obs[i + obLen] = x;
         obs[i + obLen + 1] = y + i / 2;
     }
     obLen += 168;
 
 
-    *obstacles = (int*)malloc(obLen * sizeof(int));
+    *obstacles = (unsigned short*)malloc(obLen * sizeof(unsigned short));
     if (*obstacles == nullptr) {
         cout << "Memory allocation failed!" << endl;
         exit(1);
     }
 
-    memcpy(*obstacles, obs, obLen * sizeof(int));
+    memcpy(*obstacles, obs, obLen * sizeof(unsigned short));
 
     return obLen;
 }
