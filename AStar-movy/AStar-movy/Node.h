@@ -4,29 +4,27 @@
 
 class Node {
 private:
-    int x;
-    int y;
-    double moveCost;
-    double heurCost;
-    double totalCost;
+private:
+
+    unsigned short x;
+    unsigned short y;
+    float totalCost;
     Node* parent;
 
 public:
-    Node(int x, int y, double c, double h, Node* parent);
+    Node(unsigned short x, unsigned short y, float c, float h, Node* parent);
 
-    void setParameters(int x, int y, double c, double h, Node* parent);
+    void setParameters(unsigned short x, unsigned short y, float c, float h, Node* parent);
 
-    double getX();
+    unsigned short getX();
 
-    double getY();
+    unsigned short getY();
 
-    double getMoveCost();
-
-    double getTotalCost();
+    float getTotalCost();
 
     Node* getParent();
 
-    void printNode();
+    /*void printNode();*/
 };
 
 
