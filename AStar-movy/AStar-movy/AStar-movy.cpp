@@ -8,9 +8,9 @@
 
 using namespace std;
 
-unsigned short tribObstacles(unsigned short** obstacles, short x,  short y, unsigned short xMax, unsigned short yMax, bool horizontal); // True horizontal, false vertical
-unsigned short stageOb(unsigned short** obstacles, bool team); // True blue, false yellow
-unsigned short enemyOb(unsigned short** obstacles, short x, short y);
+unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsigned short xMax, unsigned short yMax, bool horizontal, uint8_t step); // True horizontal, false vertical
+unsigned short stageOb(unsigned short** obstacles, bool team, uint8_t step); // True blue, false yellow
+unsigned short enemyOb(unsigned short** obstacles, short x, short y, uint8_t step);
 //void removeDuplicates(int*& x, int*& y, int& size);
 
 
@@ -24,11 +24,14 @@ int main()
     int lenObs = 2 * lenObstaclePoints;*/
     unsigned short lenObs = 0;
     unsigned short TotLenObs = 0;
-    unsigned short xMax = 300, yMax = 200;
+    unsigned short xMax = 300;
+    uint8_t yMax = 200;
     //bool grid[150][100];
     unsigned short* obstacles = nullptr;
     unsigned short* TotObs = nullptr;
     unsigned short* tempObs = nullptr;
+    // 1 -> every 1 cm, 5 -> every 5 cm, 10 -> every 10cm 
+    uint8_t step = 5;
 
     bool a[10], b[10];
 
@@ -68,10 +71,10 @@ int main()
 
     for (unsigned short i = 0; i < 20; i += 2) {
         if (k == 0 || k == 3 || k == 4 || k == 7) {
-            lenObs = tribObstacles(&obstacles, obsStart[i], obsStart[i + 1], xMax, yMax, false);
+            lenObs = tribObstacles(&obstacles, obsStart[i], obsStart[i + 1], xMax, yMax, false, step);
         }
         else {
-            lenObs = tribObstacles(&obstacles, obsStart[i], obsStart[i + 1], xMax, yMax, true);
+            lenObs = tribObstacles(&obstacles, obsStart[i], obsStart[i + 1], xMax, yMax, true, step);
         }
         k++;
         
@@ -108,7 +111,7 @@ int main()
 
 
     // Stage Obstacle
-    lenObs = stageOb(&obstacles, true);
+    lenObs = stageOb(&obstacles, true, step);
 
 
     tempObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
@@ -141,7 +144,7 @@ int main()
 
 
     // Enemy Obstacle
-    lenObs = enemyOb(&obstacles, 240, 60);
+    lenObs = enemyOb(&obstacles, 240, 60, step);
 
 
     tempObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
@@ -203,16 +206,17 @@ int main()
 
     cout << "Starting" << endl;
 
-    /*TotObs = (int*)malloc(sizeof(double) * 2);
+    /*TotObs = (unsigned short*)malloc(sizeof(unsigned short) * 2);
     TotLenObs = 2;
-    TotObs[0] = 1;
-    TotObs[1] = 1;  */       
+    TotObs[0] = 10;
+    TotObs[1] = 10;  */       
 
     cout << "Number of Obstacles -> " << TotLenObs << endl;
     cout << "Memory of Obstacles with int -> " << TotLenObs * sizeof(int) << endl;
     cout << "Memory of Obstacles witn short -> " << TotLenObs * sizeof(unsigned short) << endl;
 
-    Astar_HR shit(0, 0, 300, 200, xMax, yMax, TotObs, TotLenObs, false);
+
+    Astar_HR shit(0, 0, 300, 200, xMax, yMax, TotObs, TotLenObs, true, step);
     cout << "Memory of shit ->" << sizeof(shit) << endl;
 
     len = shit.pathGeneration();
@@ -366,10 +370,12 @@ int main()
 //
 //}
 
-unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsigned short xMax, unsigned short yMax, bool horizontal) {
-    unsigned short obLen = 0, minusLen = 0;
-    unsigned short obs[1008];
+unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsigned short xMax, unsigned short yMax, bool horizontal, uint8_t step) {
+    unsigned short obLen = 1008, minusLen = 0;
+    unsigned short* obs;
+    obs = (unsigned short*)malloc(sizeof(unsigned short)*obLen);
 
+    obLen = 0;
 
     if (horizontal) {
         x = x - 31;
@@ -392,7 +398,7 @@ unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsig
         obLen += 64;
 
         // Second left vertical
-        x = x + 1;
+        x = x + 1*step;
         for (unsigned short i = 0; i < 64; i += 2) {
             if ((x < 0 || y + i/2 < 0) || (x > xMax || y + i/2 > yMax)) {
                 minusLen += 2;
@@ -405,7 +411,7 @@ unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsig
         obLen += 64;
 
         // First down horizontal
-        x = x + 1;
+        x = x + 1 - step;
         for (unsigned short i = 0; i < 120; i += 2) {
             if ((x + i/2 < 0 || y < 0) || (x + i/2 > xMax || y > yMax)) {
                 minusLen += 2;
@@ -424,7 +430,7 @@ unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsig
             }
             else {
                 obs[i + obLen - minusLen] = x + i/2;
-                obs[i + obLen + 1 - minusLen] = y + 1;
+                obs[i + obLen + 1 - minusLen] = y + 1*step;
             }
         }
         obLen += 120;
@@ -616,7 +622,7 @@ unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsig
 }
 
 
-unsigned short stageOb(unsigned short** obstacles, bool team) {
+unsigned short stageOb(unsigned short** obstacles, bool team, uint8_t step) {
     unsigned short obLen = 0, x = 0, y = 0;
     unsigned short obs[1296];
 
@@ -780,7 +786,7 @@ unsigned short stageOb(unsigned short** obstacles, bool team) {
 
 
 
-unsigned short enemyOb(unsigned short** obstacles, short x, short y) {
+unsigned short enemyOb(unsigned short** obstacles, short x, short y, uint8_t step) {
     unsigned short obLen = 0;
     unsigned short obs[1328];
 
