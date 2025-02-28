@@ -4,14 +4,14 @@
 using namespace std;
 
 
-Node::Node(unsigned short x, unsigned short y, float c, float h, Node* parent) {
+Node::Node(unsigned short x, uint8_t y, float c, float h, Node* parent) {
     this->x = x;
     this->y = y;
     totalCost = c + h;
     this->parent = parent;
 }
 
-void Node::setParameters(unsigned short x, unsigned short y, float c, float h, Node* parent) {
+void Node::setParameters(unsigned short x, uint8_t y, float c, float h, Node* parent) {
     this->x = x;
     this->y = y;
     totalCost = c + h;
@@ -22,7 +22,7 @@ unsigned short Node::getX() {
     return x;
 }
 
-unsigned short Node::getY() {
+uint8_t Node::getY() {
     return y;
 }
 
@@ -34,6 +34,6 @@ Node* Node::getParent() {
     return this->parent;
 }
 
-//void Node::printNode() {
-//    cout << "x = " << x << " ,  y = " << y << " ,  tot_cost = " << totalCost << " ,  parent = " << parent << endl;
-//}
+void Node::printNode() {
+    cout << "x = " << x << " ,  y = " << static_cast<int>(y) << " ,  tot_cost = " << totalCost << " ,  parent = " << parent << endl;
+}
