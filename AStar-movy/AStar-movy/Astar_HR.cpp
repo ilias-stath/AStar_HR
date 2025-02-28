@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Astar_HR::Astar_HR(unsigned short xs, unsigned short ys, unsigned short xg, unsigned short yg, unsigned short xMax, unsigned short yMax, unsigned short* ob, unsigned short lenObs, bool bezier) {
+Astar_HR::Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg, unsigned short xMax, uint8_t yMax, unsigned short* ob, unsigned short lenObs, bool bezier, uint8_t step) {
     this->xs = xs;
     this->ys = ys;
     this->xg = xg;
@@ -18,6 +18,7 @@ Astar_HR::Astar_HR(unsigned short xs, unsigned short ys, unsigned short xg, unsi
     this->lenObs = lenObs;
     this->obstacles = (unsigned short*)malloc(sizeof(unsigned short) * this->lenObs);
     this->bezier = bezier;
+    this->step = step;
 
     memcpy(obstacles, ob, this->lenObs * sizeof(unsigned short));
 
@@ -27,13 +28,14 @@ Astar_HR::Astar_HR(unsigned short xs, unsigned short ys, unsigned short xg, unsi
     //    }
     //    cout << this->obstacles[i] << ",";
     //}
-
+    cout << "ys -> " << ys << endl;
+    cout << "yg -> " << yg << endl;
     cout << endl << endl;
 
 
 }
 
-float Astar_HR::heuristic(unsigned short xn, unsigned short yn, unsigned short xg, unsigned short yg) {
+float Astar_HR::heuristic(unsigned short xn, uint8_t yn, unsigned short xg, uint8_t yg) {
     //return abs(xn - xg) + abs(yn - yg);
     float r = sqrt(pow(xg - xn, 2) + pow(yg - yn, 2));
     return r;
@@ -72,7 +74,8 @@ std::vector<Astar_HR::Vec2> Astar_HR::bezierPath(const std::vector<Astar_HR::Vec
 
 void Astar_HR::expandNode(Node* dad) {
     Node son(0, 0, 0, 0, nullptr);
-    short x = 0, y = 0;
+    short x = 0; 
+    short y = 0;
     bool obFlag = false;
 
     // Checking the points that are 1 move from the current point. 8 points in total
@@ -80,12 +83,12 @@ void Astar_HR::expandNode(Node* dad) {
     /*if (dad->getX() == 2 && dad->getY() == 10) {
         cout << "-------------------------" << endl;
     }*/
-    for (short i = -1; i <= 1; i++) {
-        x = dad->getX() + i;
+    for (int8_t i = -1; i <= 1; i++) {
+        x = dad->getX() + i*step;
         //cout << "X=" << x << endl;
         if (x >= 0 && x <= xMax) {
-            for (short j = -1; j <= 1; j++) {
-                y = dad->getY() + j;
+            for (int8_t j = -1; j <= 1; j++) {
+                y = dad->getY() + j*step;
                 //cout << "Y=" << y << endl;
                 if (i != 0 || j != 0) {
                     if (y >= 0 && y <= yMax) {
@@ -101,11 +104,11 @@ void Astar_HR::expandNode(Node* dad) {
                                 //To set the diagonals as other cost(not good, do not use)
                                 if (abs(i) == 1 && abs(j) == 1) {
                                     //cout << "i=" << i << " ,  j=" << j << endl;
-                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2), heuristic(x, y, this->xg, this->yg), dad);
+                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2)*step, heuristic(x, y, this->xg, this->yg), dad);
                                     //cout << "Move cost -> " << dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2) << " ,  ";
                                 }
                                 else {
-                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1, heuristic(x, y, this->xg, this->yg), dad);
+                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1*step, heuristic(x, y, this->xg, this->yg), dad);
                                     //cout << "Move cost -> " << dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1 << " ,  ";
                                 }
                                 //son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
@@ -126,10 +129,10 @@ void Astar_HR::expandNode(Node* dad) {
                         }
                     }
                 }
-                y = y - j;
+                y = y - j*step;
             }
         }
-        x = x - i;
+        x = x - i*step;
     }
 }
 
@@ -227,7 +230,11 @@ unsigned short Astar_HR::pathGeneration() {
         cout << "Selected-> ";
         n->printNode();
         cout << "Node->" << n << endl;
-        cout << "----------" << endl;*/
+        cout << "----------" << endl;
+
+        cout << "n->getX() -> " << n->getX() << " , xg -> " << xg << " , n->getY() -> " << n->getY() << " , yg -> " << yg << endl;
+        cout << "Evaluate 1 -> " << (n->getX() == xg) << " ,  Evaluate 2 -> " << (n->getY() == yg) << endl;
+        */
 
         if (n->getX() == xg && n->getY() == yg) {
             break;
@@ -262,7 +269,11 @@ unsigned short Astar_HR::pathGeneration() {
     cout << "Memory of pq before -> " << pq.size()*sizeof(*n) << endl;
     cout << "Number of elements in visited before -> " << visited.size() << endl;
     cout << "Memory of visited before -> " << visited.size()*sizeof(*n) << endl;
+    cout << "Numer of obstacles -> " << lenObs << endl;
+    cout << "Memory of obstacles -> " << lenObs * sizeof(unsigned short) << endl;
     
+    delete obstacles;
+    obstacles = nullptr;
     //printPath();
     setPath(n);
     cout << "Number of elements in pq after -> " << pq.size() << endl;
