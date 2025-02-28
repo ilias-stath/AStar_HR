@@ -21,8 +21,8 @@ private:
     };
 
     struct MakePair {
-        std::size_t operator()(const std::pair<unsigned short, unsigned short>& p) const {
-            return std::hash<unsigned short>()(p.first) ^ (std::hash<unsigned short>()(p.second) << 1);
+        std::size_t operator()(const std::pair<unsigned short, uint8_t>& p) const {
+            return std::hash<unsigned short>()(p.first) ^ (std::hash<uint8_t>()(p.second) << 1);
         }
     };
 
@@ -37,8 +37,9 @@ private:
 
     std::stack<Node*> path;
     std::priority_queue<Node, std::vector<Node>, CompareCost> pq;
-    std::unordered_set<std::pair<unsigned short, unsigned short>, MakePair> visited;
-    unsigned short xs, ys, xg, yg, yMax, xMax;
+    std::unordered_set<std::pair<unsigned short, uint8_t>, MakePair> visited;
+    unsigned short xs, xg, xMax;
+    uint8_t ys, yg, yMax, step;
     unsigned short nodeQty, lenPath, lenObs, subdivisions;
     unsigned short* obstacles;
     float* xPoints;
@@ -46,14 +47,14 @@ private:
     bool bezier;
     std::vector<Vec2> controlPoints;
     std::vector<Vec2> bezierCurve;
-    float heuristic(unsigned short xn, unsigned short yn, unsigned short xg, unsigned short yg);
+    float heuristic(unsigned short xn, uint8_t yn, unsigned short xg, uint8_t yg);
     void expandNode(Node* dad);
     void setPath(Node* n);
     double binomial(unsigned short n, unsigned short k);
     std::vector<Vec2> bezierPath(const std::vector<Vec2>& controlPoints, unsigned short subdivisions);
 
 public:
-    Astar_HR(unsigned short xs, unsigned short ys, unsigned short xg, unsigned short yg, unsigned short xMax, unsigned short yMax, unsigned short* ob, unsigned short lenObs, bool bezier);
+    Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg, unsigned short xMax, uint8_t yMax, unsigned short* ob, unsigned short lenObs, bool bezier, uint8_t step);
     unsigned short pathGeneration();
     void getPath(float* x, float* y);
 
