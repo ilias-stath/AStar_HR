@@ -10,6 +10,7 @@ using namespace std;
 
 unsigned short tribObstacles(unsigned short** obstacles, short x, short y, unsigned short xMax, unsigned short yMax, bool horizontal, uint8_t step); // True horizontal, false vertical
 unsigned short stageOb(unsigned short** obstacles, bool team, uint8_t step); // True blue, false yellow
+//unsigned short enemyOb(unsigned short** obstacles, short xs, short ys, uint8_t xl, uint8_t yl, uint8_t step);
 unsigned short enemyOb(unsigned short** obstacles, short x, short y, uint8_t step);
 //void removeDuplicates(int*& x, int*& y, int& size);
 
@@ -68,6 +69,22 @@ int main()
 
     short obsStart[20] = {7, 40, 77, 25, 223, 25, 293, 40, 7, 133, 110, 95, 190, 95, 293, 133, 81, 173, 219, 173};
     unsigned short k = 0;
+
+
+    for (uint8_t i=0; i < 20; i++) {
+        if (obsStart[i] % step > step / 2) {
+            obsStart[i] = obsStart[i] + step - obsStart[i] % step;
+        }
+        else {
+            obsStart[i] = obsStart[i] - obsStart[i] % step;
+        }
+    }
+
+    /*for (uint8_t i = 0; i < 20; i++) {
+        cout << obsStart[i] << endl;
+    }
+
+    cin >> k;*/
 
     for (unsigned short i = 0; i < 20; i += 2) {
         if (k == 0 || k == 3 || k == 4 || k == 7) {
@@ -144,7 +161,7 @@ int main()
 
 
     // Enemy Obstacle
-    lenObs = enemyOb(&obstacles, 240, 60, step);
+    lenObs = enemyOb(&obstacles, 150, 100, step);
 
 
     tempObs = (unsigned short*)malloc(TotLenObs * sizeof(unsigned short));
@@ -786,9 +803,30 @@ unsigned short stageOb(unsigned short** obstacles, bool team, uint8_t step) {
 
 
 
+//unsigned short enemyOb(unsigned short** obstacles, short xs, short ys, uint8_t xl, uint8_t yl, uint8_t step) {
 unsigned short enemyOb(unsigned short** obstacles, short x, short y, uint8_t step) {
-    unsigned short obLen = 0;
+    //unsigned short obLen = 8*(xl + yl - 2) ;
     unsigned short obs[1328];
+    unsigned short obLen = 0;
+    //unsigned short* obs;
+    
+    /*if (obLen % step != 0) {
+        obLen = obLen/step + 1 ;
+    }
+    else {
+        obLen = obLen / step;
+    } */
+
+    if (step == 1) {
+        step = 0;
+    }
+
+    /*cout << obLen << endl;
+    cin >> obLen;*/
+
+    //obs = (unsigned short*)malloc(sizeof(unsigned short) * obLen);
+
+    obLen = 0;
 
     // 21 + 21
     x = x - 42;
@@ -802,23 +840,25 @@ unsigned short enemyOb(unsigned short** obstacles, short x, short y, uint8_t ste
     obLen += 168;
 
     // Second left Vertical
-    x = x + 1;
-    for (unsigned short i = 0; i < 168; i += 2) {
+    x = x + 1 + 1*(step-1);
+    y = y + step;
+    for (unsigned short i = 0; i < 168 - 2 * step; i += 2) {
         obs[i + obLen] = x;
-        obs[i + obLen + 1] = y + i/2;
+        obs[i + obLen + 1] = y + i / 2;
     }
-    obLen += 168;
+    obLen += 168 - 2 * step;
+    
 
     // First down horizontal
-    x = x + 1;
-    for (unsigned short i = 0; i < 164; i += 2) {
+    x = x + 1 + 1 * (step - 1);
+    for (unsigned short i = 0; i < 164 - 2 * step; i += 2) {
         obs[i + obLen] = x + i/2;
         obs[i + obLen + 1] = y;
     }
-    obLen += 164;
+    obLen += 164 - 2 * step;
 
     // Second down horizontal
-    for (unsigned short i = 0; i < 164; i += 2) {
+    for (unsigned short i = 0; i < 164 - 2 * step; i += 2) {
         obs[i + obLen] = x + i/2;
         obs[i + obLen + 1] = y + 1;
     }
@@ -854,6 +894,13 @@ unsigned short enemyOb(unsigned short** obstacles, short x, short y, uint8_t ste
     }
     obLen += 168;
 
+
+    for (int i = 0; i < obLen; i += 2) {
+        cout << obs[i] << ", " << obs[i + 1] << ", ";
+    }
+    cout << endl;
+
+    cin >> obLen;
 
     *obstacles = (unsigned short*)malloc(obLen * sizeof(unsigned short));
     if (*obstacles == nullptr) {
