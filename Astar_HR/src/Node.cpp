@@ -4,37 +4,29 @@
 using namespace std;
 
 
-Node::Node(int x, int y, double c, double h, Node* parent) {
+Node::Node(unsigned short x, uint8_t y, float c, float h, Node* parent) {
     this->x = x;
     this->y = y;
-    moveCost = c;
-    heurCost = h;
     totalCost = c + h;
     this->parent = parent;
 }
 
-void Node::setParameters(int x, int y, double c, double h, Node* parent) {
+void Node::setParameters(unsigned short x, uint8_t y, float c, float h, Node* parent) {
     this->x = x;
     this->y = y;
-    moveCost = c;
-    heurCost = h;
     totalCost = c + h;
     this->parent = parent;
 }
 
-double Node::getX() {
+unsigned short Node::getX() {
     return x;
 }
 
-double Node::getY() {
+uint8_t Node::getY() {
     return y;
 }
 
-double Node::getMoveCost() {
-    return moveCost;
-}
-
-double Node::getTotalCost() {
+float Node::getTotalCost() {
     return totalCost;
 }
 
@@ -43,5 +35,5 @@ Node* Node::getParent() {
 }
 
 void Node::printNode() {
-    cout << "x = " << x << " ,  y = " << y << " , cost = " << moveCost << " ,  heur = " << heurCost << " ,  parent = " << parent << endl;
+    cout << "x = " << x << " ,  y = " << static_cast<int>(y) << " ,  tot_cost = " << totalCost << " ,  parent = " << parent << endl;
 }
