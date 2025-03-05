@@ -94,11 +94,37 @@ void Astar_HR::expandNode(Node* dad) {
                     if (y >= 0 && y <= yMax) {
                         //cout << "----IN----" << endl;
                         //cout << "IN for-> " << "X=" << x << "Y=" << y << endl;
-                        for (unsigned short k = 0; k < this->lenObs; k += 2) {
+                        /*for (unsigned short k = 0; k < this->lenObs; k += 2) {
                             if (this->obstacles[k] == x && this->obstacles[k + 1] == y) {
                                 obFlag = true;
                             }
+                        }*/
+                        //int jam;
+                        for (unsigned short k = 0; k < this->lenObs; k += 4) {
+                            //cout << "Index -> " << lenObs - k << endl;
+                            if (lenObs - k == 6) {
+                                //cout << "Stage time -> ";
+                                //cout << "X:" << x << " ,Y:" << y << endl;
+                                //cout << obstacles[k+1] << endl;
+                                if ((x >= obstacles[k] && x <= obstacles[k + 4]) && (y >= obstacles[k + 3] && y <= obstacles[k + 1])) {
+                                    //cout << "Big -> X:" << x << " ,Y:" << y << endl;
+                                    obFlag = true;
+                                }
+                                else if ((x >= obstacles[k + 4] && x <= obstacles[k + 2]) && (y >= obstacles[k + 5] && y <= obstacles[k + 1])) {
+                                    //cout << "Small -> X:" << x << " ,Y:" << y << endl;
+                                    obFlag = true;
+                                }
+                                break;
+                            }
+                            else if ((x >= obstacles[k] && x <= obstacles[k + 2]) && (y >= obstacles[k + 3] && y <= obstacles[k + 1])) {
+                                obFlag = true;
+                                //cout << "Obstacle/Enemy -> X:" << x << " ,Y:" << y << endl;
+                                //cin >> jam;
+                            }
+                            
                         }
+                        //cin >> jam;
+
                         if (!obFlag) {
                             if (!(visited.find({ x, y }) != visited.end())) {
                                 //To set the diagonals as other cost(not good, do not use)
@@ -150,10 +176,11 @@ void Astar_HR::setPath(Node* n) {
     } while (n->getParent() != nullptr);
 
     visited.clear();
-
+    //lenPath++;
 
     if (bezier) {
-        for (unsigned short i = 0; i < lenPath; i++) {
+        //controlPoints.push_back(Vec2(xs, ys));
+        for (unsigned short i = 1; i < lenPath; i++) {
             n = path.top();
             path.pop();
 
@@ -196,8 +223,10 @@ void Astar_HR::setPath(Node* n) {
             exit(1);
         }
 
+        //xPoints[0] = xs;
+        //yPoints[0] = ys;
 
-        for (unsigned short i = 0; i < lenPath; i++) {
+        for (unsigned short i = 1; i < lenPath; i++) {
             n = path.top();
             path.pop();
 
