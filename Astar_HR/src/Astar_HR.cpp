@@ -28,8 +28,8 @@ Astar_HR::Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg,
     //    }
     //    cout << this->obstacles[i] << ",";
     //}
-    cout << "ys -> " << ys << endl;
-    cout << "yg -> " << yg << endl;
+    //cout << "ys -> " << ys << endl;
+    //cout << "yg -> " << yg << endl;
     cout << endl << endl;
 
 
@@ -74,7 +74,7 @@ std::vector<Astar_HR::Vec2> Astar_HR::bezierPath(const std::vector<Astar_HR::Vec
 
 void Astar_HR::expandNode(Node* dad) {
     Node son(0, 0, 0, 0, nullptr);
-    short x = 0; 
+    short x = 0;
     short y = 0;
     bool obFlag = false;
 
@@ -84,11 +84,11 @@ void Astar_HR::expandNode(Node* dad) {
         cout << "-------------------------" << endl;
     }*/
     for (int8_t i = -1; i <= 1; i++) {
-        x = dad->getX() + i*step;
+        x = dad->getX() + i * step;
         //cout << "X=" << x << endl;
         if (x >= 0 && x <= xMax) {
             for (int8_t j = -1; j <= 1; j++) {
-                y = dad->getY() + j*step;
+                y = dad->getY() + j * step;
                 //cout << "Y=" << y << endl;
                 if (i != 0 || j != 0) {
                     if (y >= 0 && y <= yMax) {
@@ -121,7 +121,7 @@ void Astar_HR::expandNode(Node* dad) {
                                 //cout << "Obstacle/Enemy -> X:" << x << " ,Y:" << y << endl;
                                 //cin >> jam;
                             }
-                            
+
                         }
                         //cin >> jam;
 
@@ -130,11 +130,11 @@ void Astar_HR::expandNode(Node* dad) {
                                 //To set the diagonals as other cost(not good, do not use)
                                 if (abs(i) == 1 && abs(j) == 1) {
                                     //cout << "i=" << i << " ,  j=" << j << endl;
-                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2)*step, heuristic(x, y, this->xg, this->yg), dad);
+                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2) * step, heuristic(x, y, this->xg, this->yg), dad);
                                     //cout << "Move cost -> " << dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2) << " ,  ";
                                 }
                                 else {
-                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1*step, heuristic(x, y, this->xg, this->yg), dad);
+                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1 * step, heuristic(x, y, this->xg, this->yg), dad);
                                     //cout << "Move cost -> " << dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1 << " ,  ";
                                 }
                                 //son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
@@ -155,10 +155,10 @@ void Astar_HR::expandNode(Node* dad) {
                         }
                     }
                 }
-                y = y - j*step;
+                y = y - j * step;
             }
         }
-        x = x - i*step;
+        x = x - i * step;
     }
 }
 
@@ -223,8 +223,8 @@ void Astar_HR::setPath(Node* n) {
             exit(1);
         }
 
-        //xPoints[0] = xs;
-        //yPoints[0] = ys;
+        //xPoints[0] = xs*10;
+        //yPoints[0] = ys*10;
 
         for (unsigned short i = 1; i < lenPath; i++) {
             n = path.top();
@@ -290,32 +290,44 @@ unsigned short Astar_HR::pathGeneration() {
 
         //cout << "Nodes created = " << nodeQty << endl;
 
-       
+
     }
 
-    cout << "Memory of Node -> " << sizeof(*n) << endl;
-    cout << "Number of elements in pq before -> " << pq.size() << endl;
-    cout << "Memory of pq before -> " << pq.size()*sizeof(*n) << endl;
-    cout << "Number of elements in visited before -> " << visited.size() << endl;
-    cout << "Memory of visited before -> " << visited.size()*sizeof(*n) << endl;
-    cout << "Numer of obstacles -> " << lenObs << endl;
-    cout << "Memory of obstacles -> " << lenObs * sizeof(unsigned short) << endl;
-    
+    Serial.print("Memory of Node -> ");
+    Serial.println(sizeof(*n));
+    Serial.print("Number of elements in pq before -> ");
+    Serial.println(pq.size());
+    Serial.print("Memory of pq before -> ");
+    Serial.println(pq.size() * sizeof(*n));
+    Serial.print("Number of elements in visited before -> ");
+    Serial.println(visited.size());
+    Serial.print("Memory of visited before -> ");
+    Serial.println(visited.size() * sizeof(*n));
+    Serial.print("Number of obstacles -> ");
+    Serial.println(lenObs);
+    Serial.print("Memory of obstacles -> ");
+    Serial.println(lenObs * sizeof(unsigned short));
     delete obstacles;
     obstacles = nullptr;
-    //printPath();
-    setPath(n);
-    cout << "Number of elements in pq after -> " << pq.size() << endl;
-    cout << "Memory of pq after -> " << pq.size() * sizeof(*n) << endl;
-    cout << "Number of elements in visited after -> " << visited.size() << endl;
-    cout << "Memory of visited after -> " << visited.size() * sizeof(*n) << endl;
-    cout << "Lenght of path -> " << lenPath << endl;
-    cout << "Memory of xPoints/yPoints -> " << lenPath * sizeof(float) << endl;
-    cout << "Nodes created while deleting the ones that are on visited -> " << nodeQty << endl;
 
-    /*for (int i = 0; i < len; i++) {
-        cout << "x=" << (*x)[i] << " , y=" << (*y)[i] << endl;
-    }*/
+    setPath(n);
+
+
+    Serial.print("Number of elements in pq after -> ");
+    Serial.println(pq.size());
+    Serial.print("Memory of pq after -> ");
+    Serial.println(pq.size() * sizeof(*n));
+    Serial.print("Number of elements in visited after -> ");
+    Serial.println(visited.size());
+    Serial.print("Memory of visited after -> ");
+    Serial.println(visited.size() * sizeof(*n));
+    Serial.print("Lenght of path -> ");
+    Serial.println(lenPath);
+    Serial.print("Memory of xPoints/yPoints -> ");
+    Serial.println(lenPath * sizeof(float));
+    Serial.print("Nodes created while deleting the ones that are on visited -> ");
+    Serial.println(nodeQty);
+
 
     return lenPath;
 }
