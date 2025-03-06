@@ -180,7 +180,7 @@ void Astar_HR::setPath(Node* n) {
 
     if (bezier) {
         //controlPoints.push_back(Vec2(xs, ys));
-        for (unsigned short i = 1; i < lenPath; i++) {
+        for (unsigned short i = 0; i < lenPath; i++) {
             n = path.top();
             path.pop();
 
