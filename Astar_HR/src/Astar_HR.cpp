@@ -226,7 +226,7 @@ void Astar_HR::setPath(Node* n) {
         //xPoints[0] = xs*10;
         //yPoints[0] = ys*10;
 
-        for (unsigned short i = 1; i < lenPath; i++) {
+        for (unsigned short i = 0; i < lenPath; i++) {
             n = path.top();
             path.pop();
 
