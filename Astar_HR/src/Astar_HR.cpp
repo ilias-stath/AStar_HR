@@ -175,6 +175,9 @@ void Astar_HR::setPath(Node* n) {
 
     } while (n->getParent() != nullptr);
 
+    n = n->getParent();
+    lenPath++;
+
     visited.clear();
     //lenPath++;
 
