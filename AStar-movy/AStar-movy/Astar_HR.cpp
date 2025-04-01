@@ -66,6 +66,7 @@ std::vector<Astar_HR::Vec2> Astar_HR::bezierPath(const std::vector<Astar_HR::Vec
             point += controlPoints[j] * coeff;
             //cout << "point->" << point.x << endl;
         }
+        //cout << "point->" << point.x << endl;
         //cout << endl;
         curve.push_back(point);
     }
@@ -175,6 +176,9 @@ void Astar_HR::setPath(Node* n) {
 
     } while (n->getParent() != nullptr);
 
+    path.push(n);
+    lenPath++;
+
     visited.clear();
     //lenPath++;
 
@@ -186,7 +190,8 @@ void Astar_HR::setPath(Node* n) {
 
             controlPoints.push_back(Vec2(n->getX(), n->getY()));
         }
-        this->subdivisions = lenPath;
+        this->subdivisions = 2*lenPath;
+        lenPath = subdivisions;
 
         bezierCurve = bezierPath(controlPoints, subdivisions);
 
