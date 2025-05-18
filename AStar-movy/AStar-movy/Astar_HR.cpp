@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Astar_HR::Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg, unsigned short xMax, uint8_t yMax, unsigned short* ob, unsigned short lenObs, bool bezier, uint8_t step) {
+Astar_HR::Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg, unsigned short xMax, uint8_t yMax, unsigned short* obs, unsigned short lenObs, bool bezier, uint8_t step) {
     this->xs = xs;
     this->ys = ys;
     this->xg = xg;
@@ -20,7 +20,7 @@ Astar_HR::Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg,
     this->bezier = bezier;
     this->step = step;
 
-    memcpy(obstacles, ob, this->lenObs * sizeof(unsigned short));
+    memcpy(obstacles, obs, this->lenObs * sizeof(unsigned short));
 
     //for (int i = 0; i < this->lenObs; i++) {
     //    if (i % 2 == 0) {
@@ -66,7 +66,6 @@ std::vector<Astar_HR::Vec2> Astar_HR::bezierPath(const std::vector<Astar_HR::Vec
             point += controlPoints[j] * coeff;
             //cout << "point->" << point.x << endl;
         }
-        //cout << "point->" << point.x << endl;
         //cout << endl;
         curve.push_back(point);
     }
@@ -75,7 +74,7 @@ std::vector<Astar_HR::Vec2> Astar_HR::bezierPath(const std::vector<Astar_HR::Vec
 
 void Astar_HR::expandNode(Node* dad) {
     Node son(0, 0, 0, 0, nullptr);
-    short x = 0; 
+    short x = 0;
     short y = 0;
     bool obFlag = false;
 
@@ -85,57 +84,31 @@ void Astar_HR::expandNode(Node* dad) {
         cout << "-------------------------" << endl;
     }*/
     for (int8_t i = -1; i <= 1; i++) {
-        x = dad->getX() + i*step;
+        x = dad->getX() + i * step;
         //cout << "X=" << x << endl;
         if (x >= 0 && x <= xMax) {
             for (int8_t j = -1; j <= 1; j++) {
-                y = dad->getY() + j*step;
+                y = dad->getY() + j * step;
                 //cout << "Y=" << y << endl;
                 if (i != 0 || j != 0) {
                     if (y >= 0 && y <= yMax) {
                         //cout << "----IN----" << endl;
                         //cout << "IN for-> " << "X=" << x << "Y=" << y << endl;
-                        /*for (unsigned short k = 0; k < this->lenObs; k += 2) {
+                        for (unsigned short k = 0; k < this->lenObs; k += 2) {
                             if (this->obstacles[k] == x && this->obstacles[k + 1] == y) {
                                 obFlag = true;
                             }
-                        }*/
-                        //int jam;
-                        for (unsigned short k = 0; k < this->lenObs; k += 4) {
-                            //cout << "Index -> " << lenObs - k << endl;
-                            if (lenObs - k == 6) {
-                                //cout << "Stage time -> ";
-                                //cout << "X:" << x << " ,Y:" << y << endl;
-                                //cout << obstacles[k+1] << endl;
-                                if ((x >= obstacles[k] && x <= obstacles[k + 4]) && (y >= obstacles[k + 3] && y <= obstacles[k + 1])) {
-                                    //cout << "Big -> X:" << x << " ,Y:" << y << endl;
-                                    obFlag = true;
-                                }
-                                else if ((x >= obstacles[k + 4] && x <= obstacles[k + 2]) && (y >= obstacles[k + 5] && y <= obstacles[k + 1])) {
-                                    //cout << "Small -> X:" << x << " ,Y:" << y << endl;
-                                    obFlag = true;
-                                }
-                                break;
-                            }
-                            else if ((x >= obstacles[k] && x <= obstacles[k + 2]) && (y >= obstacles[k + 3] && y <= obstacles[k + 1])) {
-                                obFlag = true;
-                                //cout << "Obstacle/Enemy -> X:" << x << " ,Y:" << y << endl;
-                                //cin >> jam;
-                            }
-                            
                         }
-                        //cin >> jam;
-
                         if (!obFlag) {
                             if (!(visited.find({ x, y }) != visited.end())) {
                                 //To set the diagonals as other cost(not good, do not use)
                                 if (abs(i) == 1 && abs(j) == 1) {
                                     //cout << "i=" << i << " ,  j=" << j << endl;
-                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2)*step, heuristic(x, y, this->xg, this->yg), dad);
+                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2) * step, heuristic(x, y, this->xg, this->yg), dad);
                                     //cout << "Move cost -> " << dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + sqrt(2) << " ,  ";
                                 }
                                 else {
-                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1*step, heuristic(x, y, this->xg, this->yg), dad);
+                                    son.setParameters(x, y, dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1 * step, heuristic(x, y, this->xg, this->yg), dad);
                                     //cout << "Move cost -> " << dad->getTotalCost() - heuristic(dad->getX(), dad->getY(), this->xg, this->yg) + 1 << " ,  ";
                                 }
                                 //son.setParameters(x, y, dad->getMoveCost() + 1, heuristic(x, y, this->xg, this->yg), dad);
@@ -156,10 +129,10 @@ void Astar_HR::expandNode(Node* dad) {
                         }
                     }
                 }
-                y = y - j*step;
+                y = y - j * step;
             }
         }
-        x = x - i*step;
+        x = x - i * step;
     }
 }
 
@@ -167,6 +140,7 @@ void Astar_HR::expandNode(Node* dad) {
 void Astar_HR::setPath(Node* n) {
     std::priority_queue<Node, std::vector<Node>, CompareCost> empty_pq;
     pq.swap(empty_pq);
+    visited.clear();
 
     do {
         //cout << n->getParent() << endl;
@@ -176,24 +150,22 @@ void Astar_HR::setPath(Node* n) {
 
     } while (n->getParent() != nullptr);
 
-    path.push(n);
-    lenPath++;
 
-    visited.clear();
-    //lenPath++;
 
     if (bezier) {
-        //controlPoints.push_back(Vec2(xs, ys));
         for (unsigned short i = 0; i < lenPath; i++) {
             n = path.top();
             path.pop();
 
             controlPoints.push_back(Vec2(n->getX(), n->getY()));
         }
-        this->subdivisions = 2*lenPath;
-        lenPath = subdivisions;
+        this->subdivisions = lenPath;
 
         bezierCurve = bezierPath(controlPoints, subdivisions);
+
+        controlPoints.clear();
+        controlPoints.shrink_to_fit();
+        std::vector<Vec2>().swap(controlPoints);
 
         lenPath++;
 
@@ -215,6 +187,10 @@ void Astar_HR::setPath(Node* n) {
             yPoints[i] = point.y;
             i++;
         }
+
+        bezierCurve.clear();
+        bezierCurve.shrink_to_fit();
+        std::vector<Vec2>().swap(bezierCurve);
     }
     else {
         // Allocate new memory for x and y
@@ -228,8 +204,6 @@ void Astar_HR::setPath(Node* n) {
             exit(1);
         }
 
-        //xPoints[0] = xs;
-        //yPoints[0] = ys;
 
         for (unsigned short i = 0; i < lenPath; i++) {
             n = path.top();
@@ -295,17 +269,17 @@ unsigned short Astar_HR::pathGeneration() {
 
         //cout << "Nodes created = " << nodeQty << endl;
 
-       
+
     }
 
     cout << "Memory of Node -> " << sizeof(*n) << endl;
     cout << "Number of elements in pq before -> " << pq.size() << endl;
-    cout << "Memory of pq before -> " << pq.size()*sizeof(*n) << endl;
+    cout << "Memory of pq before -> " << pq.size() * sizeof(*n) << endl;
     cout << "Number of elements in visited before -> " << visited.size() << endl;
-    cout << "Memory of visited before -> " << visited.size()*sizeof(*n) << endl;
+    cout << "Memory of visited before -> " << visited.size() * sizeof(*n) << endl;
     cout << "Numer of obstacles -> " << lenObs << endl;
     cout << "Memory of obstacles -> " << lenObs * sizeof(unsigned short) << endl;
-    
+
     delete obstacles;
     obstacles = nullptr;
     //printPath();
