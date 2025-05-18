@@ -54,7 +54,7 @@ private:
     std::vector<Vec2> bezierPath(const std::vector<Vec2>& controlPoints, unsigned short subdivisions);
 
 public:
-    Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg, unsigned short xMax, uint8_t yMax, unsigned short* ob, unsigned short lenObs, bool bezier, uint8_t step);
+    Astar_HR(unsigned short xs, uint8_t ys, unsigned short xg, uint8_t yg, unsigned short xMax, uint8_t yMax, unsigned short* obs, unsigned short lenObs, bool bezier, uint8_t step);
     unsigned short pathGeneration();
     void getPath(float* x, float* y);
 
